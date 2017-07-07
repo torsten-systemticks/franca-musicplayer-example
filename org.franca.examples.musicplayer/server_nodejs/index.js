@@ -65,11 +65,11 @@ stub.findTrackByTitle = function(title) {
 	console.log('Searching for title ' + title + '...');
 
 	spotifyApi.searchTracks(title)
-	  .then(function(data) {
+		.then(function(data) {
 			// print some information about the results
 			var nFound = data.body.tracks.total;
 			if (nFound>0) {
-				console.log('I got ' +  + ' results!');
+				console.log('SpotifyAPI provided ' + nFound + ' results!');
 
 				// Go through the first page of results
 				var firstPage = data.body.tracks.items;
@@ -78,13 +78,11 @@ stub.findTrackByTitle = function(title) {
 				//console.log("found track info: " + JSON.stringify(info));
 				stub.setCurrentTrack(info);
 			} else {
-
+				//stub.
 			}
-		}
-
-	  }, function(err) {
+		}, function(err) {
 			console.log('Error in SpotifyAPI: ', err.message);
-	  });
+		});
 }
 
 
