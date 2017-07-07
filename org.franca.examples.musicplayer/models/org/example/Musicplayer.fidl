@@ -7,6 +7,7 @@ interface Musicplayer {
 	
 	method findTrackByTitle {
 		in { String title }
+		error { NOT_CONNECTED, NOT_FOUND }
 	}
 	
 	<** @description: Start playing the current playlist or resume playing
@@ -26,21 +27,22 @@ interface Musicplayer {
 		PSM {
 			initial Idle
 			state Idle {
-				on call findTrackByTitle -> Finding
+				on call findTrackByTitle -> SearchingTrack
 			}
-			state Finding {
+			state SearchingTrack {
 				on respond findTrackByTitle -> TrackSelected
+				on error findTrackByTitle -> Idle
 			}
 			state TrackSelected {
 				on call play -> RequestedPlaying
-				on call findTrackByTitle -> Finding
+				on call findTrackByTitle -> SearchingTrack
 			}
 			state RequestedPlaying {
 				on respond play -> Playing
 			}
 			state Playing {
 				on call pause -> RequestedPause
-				on call findTrackByTitle -> Finding
+				on call findTrackByTitle -> SearchingTrack
 			}
 			state RequestedPause {
 				on respond pause -> TrackSelected
