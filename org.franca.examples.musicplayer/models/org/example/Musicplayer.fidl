@@ -1,0 +1,51 @@
+package org.example
+
+interface Musicplayer {
+
+	<** @description: Current track. **> 
+	attribute TrackInfo currentTrack readonly
+	
+	method findTrackByTitle {
+		in { String title }
+	}
+	
+	<** @description: Start playing the current playlist or resume playing
+	                  after pause(). **>
+	method play { }
+
+	<** @description: Pause playing the current playlist. **>
+	method pause { }
+	
+	<** @description: Track metadata. **>
+	struct TrackInfo {
+		String title
+		String interpret
+	}
+
+	contract {
+		PSM {
+			initial Idle
+			state Idle {
+				on call findTrackByTitle -> Finding
+			}
+			state Finding {
+				on respond findTrackByTitle -> TrackSelected
+			}
+			state TrackSelected {
+				on call play -> RequestedPlaying
+				on call findTrackByTitle -> Finding
+			}
+			state RequestedPlaying {
+				on respond play -> Playing
+			}
+			state Playing {
+				on call pause -> RequestedPause
+				on call findTrackByTitle -> Finding
+			}
+			state RequestedPause {
+				on respond pause -> TrackSelected
+			}
+		}
+	}
+}
+
