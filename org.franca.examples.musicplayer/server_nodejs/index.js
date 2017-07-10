@@ -69,6 +69,7 @@ stub.findTrackByTitle = function(title, reply, error) {
 
 	if (title == '') {
 		signalError(error, "EMPTY_INPUT");
+    logger.warn('EMPTY_INPUT');
 		return;
 	}
 
@@ -92,11 +93,11 @@ stub.findTrackByTitle = function(title, reply, error) {
 				stub.setCurrentTrack(info);
 				reply();
 			} else {
-				logger.info('No track found at all.');
+				logger.error('No track found at all.');
 				signalError(error, "NOT_FOUND");
 			}
 		}, function(err) {
-			logger.info('Error in SpotifyAPI: ', err.message);
+			logger.error('Error in SpotifyAPI: ', err.message);
 			signalError(error, "NOT_FOUND");
 		});
 }
@@ -110,7 +111,7 @@ stub.pause = function(reply) {
 }
 
 function signalError(errorHandler, error) {
-	logger.info('Error: ', error);
+	logger.error('Error: ', error);
 	errorHandler(error);
 
 	var info = { title: null, interpret: null };

@@ -2,18 +2,18 @@
   "appenders": {
     "Application": {
       "type": "file",
-      "filename": "logs/application.log"
-    },
-    "WampServer": {
-      "type": "file",
-      "filename": "logs/application.log"
-    },
-    "MusicplayerStub": {
-      "type": "file",
+      "layout": {
+        "type": "pattern",
+        "pattern": "%d{ISO8601} %p %c %m"
+      },
       "filename": "logs/application.log"
     },
     "console": {
-      "type": "console"
+      "type": "console",
+      "layout": {
+        "type": "pattern",
+        "pattern": "%d{ISO8601} %p %c %m"
+      }
     }
   },
   "categories": {
