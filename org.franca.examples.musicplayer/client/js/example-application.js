@@ -9,7 +9,7 @@
 // switch page programmatically: $.mobile.changePage("#pNav")
 
 function initApp() {
-	showEqualizer(0);
+	showEqualizer(null);
 
 	// initialize proxy for Musicplayer interface
 	var proxy = new MusicplayerProxy();
@@ -36,19 +36,19 @@ function initApp() {
 		if (trackInfo.interpret!=null && trackInfo.title!=null)
 			text = trackInfo.interpret + ': ' + trackInfo.title;
 		document.getElementById('current-title').innerHTML = text;
-		showEqualizer(0);
+		showEqualizer(null);
 	};
 
 	// connect UI buttons with playMusic() calls
 	$("#mPlay").click(function() { proxy.play(); });
 
 	proxy.replyPlay = function(cid) {
-		showEqualizer(1);
+		showEqualizer("playing.gif");
 	};
 
 	$("#mPause").click(function() { proxy.pause(); });
 	proxy.replyPause = function(cid) {
-		showEqualizer(0);
+		showEqualizer("paused.png");
 	};
 
 	$(document).on( "pageinit", "#pHome", function() {
@@ -68,14 +68,12 @@ function initApp() {
 }
 
 
-function showEqualizer(mode) {
-	switch(mode) {
-		case 1:
-			document.getElementById('equalizer').style.visibility = "visible";
-			break;
-		default:
-			document.getElementById('equalizer').style.visibility = "hidden";
-			break;
+function showEqualizer(img) {
+	if (img==null) {
+		document.getElementById('equalizer').style.visibility = "hidden";
+	} else {
+		document.getElementById('equalizer').src = "img/" + img;
+		document.getElementById('equalizer').style.visibility = "visible";
 	}
 }
 
