@@ -9,8 +9,6 @@ var log4js = require('log4js');
 log4js.configure('log4js-conf.json');
 var logger = log4js.getLogger('Application');
 
-var withSpotify = false;
-
 // create http server and listen to port 8180
 // we need this to serve index.html and other files to the client
 var HttpServer = require('./base/util/HttpServer');
