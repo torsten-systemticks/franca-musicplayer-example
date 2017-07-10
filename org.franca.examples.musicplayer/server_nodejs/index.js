@@ -79,7 +79,12 @@ stub.findTrackByTitle = function(title, reply, error) {
 				// Go through the first page of results
 				var firstPage = data.body.tracks.items;
 				var mostPopular = firstPage[0];
-				var info = { title: mostPopular.name, interpret: mostPopular.artists[0].name };
+				//console.log("FOUND: " + JSON.stringify(mostPopular));
+				var info = {
+					title: mostPopular.name,
+					interpret: mostPopular.artists[0].name,
+					coverURL: mostPopular.album.images[0].url
+				};
 				//console.log("found track info: " + JSON.stringify(info));
 				stub.setCurrentTrack(info);
 
@@ -109,25 +114,5 @@ function signalError(errorHandler, error) {
 	var info = { title: null, interpret: null };
 	stub.setCurrentTrack(info);
 }
-
-/*
-var driveTimerID = setInterval(function() {
-	stub.setClock(getTime());
-}, 1000);
-
-function getTime() {
-	var date = new Date();
-    var hour = date.getHours();
-    hour = (hour < 10 ? "0" : "") + hour;
-
-    var min  = date.getMinutes();
-    min = (min < 10 ? "0" : "") + min;
-
-    var sec  = date.getSeconds();
-    sec = (sec < 10 ? "0" : "") + sec;
-
-    return hour + ":" + min + ":" + sec
-}
-*/
 
 

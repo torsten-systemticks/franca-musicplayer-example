@@ -21,6 +21,7 @@ interface Musicplayer {
 	struct TrackInfo {
 		String title
 		String interpret
+		String coverURL
 	}
 
 	contract {

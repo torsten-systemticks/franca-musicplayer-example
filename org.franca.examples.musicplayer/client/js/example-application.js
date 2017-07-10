@@ -10,6 +10,7 @@
 
 function initApp() {
 	showEqualizer(null);
+	showCover(null);
 
 	// initialize proxy for Musicplayer interface
 	var proxy = new MusicplayerProxy();
@@ -36,12 +37,12 @@ function initApp() {
 		if (trackInfo.interpret!=null && trackInfo.title!=null)
 			text = trackInfo.interpret + ': ' + trackInfo.title;
 		document.getElementById('current-title').innerHTML = text;
+		showCover(trackInfo.coverURL);
 		showEqualizer(null);
 	};
 
-	// connect UI buttons with playMusic() calls
+	// play/pause buttons
 	$("#mPlay").click(function() { proxy.play(); });
-
 	proxy.replyPlay = function(cid) {
 		showEqualizer("playing.gif");
 	};
@@ -77,6 +78,14 @@ function showEqualizer(img) {
 	}
 }
 
+function showCover(url) {
+	if (url==null) {
+		document.getElementById('cover').style.visibility = "hidden";
+	} else {
+		document.getElementById('cover').src = url;
+		document.getElementById('cover').style.visibility = "visible";
+	}
+}
 
 function initFixedHeaders() {
 	jQuery.fn.headerOnAllPages = function() {
