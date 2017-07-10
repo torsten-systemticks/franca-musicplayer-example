@@ -87,8 +87,7 @@ stub.findTrackByTitle = function(title, reply, error) {
 				};
 				//console.log("found track info: " + JSON.stringify(info));
 				stub.setCurrentTrack(info);
-
-				reply("done");
+				reply();
 			} else {
 				console.log('No track found at all.');
 				signalError(error, "NOT_FOUND");
