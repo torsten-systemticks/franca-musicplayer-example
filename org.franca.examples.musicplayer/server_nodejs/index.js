@@ -5,6 +5,9 @@
 * which accompanies this distribution, and is available at
 * http://www.eclipse.org/legal/epl-v10.html
 *******************************************************************************/
+var log4js = require('log4js');
+log4js.configure('log4js-conf.json');
+var logger = log4js.getLogger('Application');
 
 var withSpotify = false;
 
@@ -22,25 +25,25 @@ var spotifyApi = new SpotifyWebApi(SpotifyApiCredentials);
 // Retrieve an access token.
 spotifyApi.clientCredentialsGrant()
   .then(function(data) {
-    console.log('The access token expires in ' + data.body['expires_in']);
-    console.log('The access token is ' + data.body['access_token']);
+    logger.info('The access token expires in ' + data.body['expires_in']);
+    logger.info('The access token is ' + data.body['access_token']);
 
     // Save the access token so that it's used in future calls
     spotifyApi.setAccessToken(data.body['access_token']);
 
     /*
-	console.log("Getting artists albums...")
+	logger.info("Getting artists albums...")
 	spotifyApi.getArtistAlbums('43ZHCT0cAZBISjO8DG9PnE')
 	  .then(function(data) {
-	    console.log('Artist albums', data.body);
+	    logger.info('Artist albums', data.body);
 	  }, function(err) {
 	    console.error(err);
 	  });
-	console.log("done.");
+	logger.info("done.");
 	*/
 
   }, function(err) {
-        console.log('Something went wrong when retrieving an access token', err);
+        logger.info('Something went wrong when retrieving an access token', err);
   });
 
 
@@ -54,15 +57,15 @@ stub.currentTrack = null;
 stub.init();
 
 stub.onClientConnected = function(clientID) {
-	console.log('The ID of the newly connected client is ' + clientID);
+	logger.info('The ID of the newly connected client is ' + clientID);
 };
 
 stub.onClientDisconnected = function(clientID) {
-	console.log('The client with ID ' + clientID + ' has disconnected');
+	logger.info('The client with ID ' + clientID + ' has disconnected');
 }
 
 stub.findTrackByTitle = function(title, reply, error) {
-	console.log('Searching for title ' + title + '...');
+	logger.info('Searching for title ' + title + '...');
 
 	if (title == '') {
 		signalError(error, "EMPTY_INPUT");
@@ -74,27 +77,27 @@ stub.findTrackByTitle = function(title, reply, error) {
 			// print some information about the results
 			var nFound = data.body.tracks.total;
 			if (nFound>0) {
-				console.log('SpotifyAPI provided ' + nFound + ' results!');
+				logger.info('SpotifyAPI provided ' + nFound + ' results!');
 
 				// Go through the first page of results
 				var firstPage = data.body.tracks.items;
 				var mostPopular = firstPage[0];
-				//console.log("FOUND: " + JSON.stringify(mostPopular));
+				//logger.info("FOUND: " + JSON.stringify(mostPopular));
 				var info = {
 					title: mostPopular.name,
 					interpret: mostPopular.artists[0].name,
 					coverURL: mostPopular.album.images[0].url
 				};
-				//console.log("found track info: " + JSON.stringify(info));
+				//logger.info("found track info: " + JSON.stringify(info));
 				stub.setCurrentTrack(info);
 
 				reply("done");
 			} else {
-				console.log('No track found at all.');
+				logger.info('No track found at all.');
 				signalError(error, "NOT_FOUND");
 			}
 		}, function(err) {
-			console.log('Error in SpotifyAPI: ', err.message);
+			logger.info('Error in SpotifyAPI: ', err.message);
 			signalError(error, "NOT_FOUND");
 		});
 }
@@ -108,11 +111,9 @@ stub.pause = function(reply) {
 }
 
 function signalError(errorHandler, error) {
-	console.log('Error: ', error);
+	logger.info('Error: ', error);
 	errorHandler(error);
 
 	var info = { title: null, interpret: null };
 	stub.setCurrentTrack(info);
 }
-
-
