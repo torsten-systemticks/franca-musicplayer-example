@@ -7,7 +7,7 @@ interface Musicplayer {
 	
 	method findTrackByTitle {
 		in { String title }
-		error { NOT_CONNECTED, NOT_FOUND }
+		error { NOT_CONNECTED, EMPTY_INPUT, NOT_FOUND }
 	}
 	
 	<** @description: Start playing the current playlist or resume playing

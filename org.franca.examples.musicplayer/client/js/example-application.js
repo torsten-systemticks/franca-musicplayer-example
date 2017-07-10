@@ -9,6 +9,8 @@
 // switch page programmatically: $.mobile.changePage("#pNav")
 
 function initApp() {
+	showEqualizer(0);
+
 	// initialize proxy for Musicplayer interface
 	var proxy = new MusicplayerProxy();
 	proxy.connect('ws://localhost:8181');
@@ -30,38 +32,51 @@ function initApp() {
 	// register callback for SimpleUI.onChangedClock() updates
 	proxy.onChangedCurrentTrack = function(trackInfo) {
 		console.log("trackInfo: " + JSON.stringify(trackInfo));
-		for(var k in trackInfo) {
-			console.log("  X: " + k);
-
-		}
-		document.getElementById('current-title').innerHTML = trackInfo.interpret + ': ' + trackInfo.title;
+		var text = "No title found!";
+		if (trackInfo.interpret!=null && trackInfo.title!=null)
+			text = trackInfo.interpret + ': ' + trackInfo.title;
+		document.getElementById('current-title').innerHTML = text;
+		showEqualizer(0);
 	};
 
-	// register callback for SimpleUI.playingTitle() broadcast
-	proxy.signalPlayingTitle = function(title) {
-		document.getElementById('current-title').innerHTML = title;
-	};
-
-	// register callback for SimpleUI.updateVelocity() broadcast
-	proxy.signalUpdateVelocity = function(velocity) {
-		tacho.set(velocity);
-	};
-	
 	// connect UI buttons with playMusic() calls
 	$("#mPlay").click(function() { proxy.play(); });
+
+	proxy.replyPlay = function(cid) {
+		showEqualizer(1);
+	};
+
 	$("#mPause").click(function() { proxy.pause(); });
+	proxy.replyPause = function(cid) {
+		showEqualizer(0);
+	};
 
 	$(document).on( "pageinit", "#pHome", function() {
 		$("#mFind").click(function() {
 			proxy.findTrackByTitle(document.getElementById("title").value);
 		});
 
-		// register callback for SimpleUI.startNavigation() replies
-		proxy.replyStartNavigation = function(cid, routeLength) {
-			$('#navresult').text("Distance to destination: " + routeLength + " km");
+		// register callbacks for findTrackByTitle replies
+		proxy.replyFindTrackByTitle = function(cid) {
+			console.log("replyFindTrackByTitle #" + cid);
+		};
+		proxy.errorFindTrackByTitle = function(cid, error) {
+			console.log("errorFindTrackByTitle #" + cid + " error=" + error);
 		};
 
 	});
+}
+
+
+function showEqualizer(mode) {
+	switch(mode) {
+		case 1:
+			document.getElementById('equalizer').style.visibility = "visible";
+			break;
+		default:
+			document.getElementById('equalizer').style.visibility = "hidden";
+			break;
+	}
 }
 
 

@@ -61,8 +61,13 @@ stub.onClientDisconnected = function(clientID) {
 	console.log('The client with ID ' + clientID + ' has disconnected');
 }
 
-stub.findTrackByTitle = function(title) {
+stub.findTrackByTitle = function(title, reply, error) {
 	console.log('Searching for title ' + title + '...');
+
+	if (title == '') {
+		signalError(error, "EMPTY_INPUT");
+		return;
+	}
 
 	spotifyApi.searchTracks(title)
 		.then(function(data) {
@@ -77,14 +82,33 @@ stub.findTrackByTitle = function(title) {
 				var info = { title: mostPopular.name, interpret: mostPopular.artists[0].name };
 				//console.log("found track info: " + JSON.stringify(info));
 				stub.setCurrentTrack(info);
+
+				reply("done");
 			} else {
-				//stub.
+				console.log('No track found at all.');
+				signalError(error, "NOT_FOUND");
 			}
 		}, function(err) {
 			console.log('Error in SpotifyAPI: ', err.message);
+			signalError(error, "NOT_FOUND");
 		});
 }
 
+stub.play = function(reply) {
+	reply();
+}
+
+stub.pause = function(reply) {
+	reply();
+}
+
+function signalError(errorHandler, error) {
+	console.log('Error: ', error);
+	errorHandler(error);
+
+	var info = { title: null, interpret: null };
+	stub.setCurrentTrack(info);
+}
 
 /*
 var driveTimerID = setInterval(function() {
