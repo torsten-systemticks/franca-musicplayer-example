@@ -80,6 +80,12 @@ stub.findTrackByTitle = function(title, reply, error) {
 
 				// Go through the first page of results
 				var firstPage = data.body.tracks.items;
+
+        logger.debug('Show results from first page:');
+        firstPage.map((item) => item.name).forEach(function (name) {
+          logger.debug(JSON.stringify(name));
+        });
+
 				var mostPopular = firstPage[0];
 				//logger.info("FOUND: " + JSON.stringify(mostPopular));
 				var info = {
