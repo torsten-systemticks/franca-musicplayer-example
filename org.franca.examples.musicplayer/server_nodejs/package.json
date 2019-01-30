@@ -1,8 +1,8 @@
 {
 	"name": "websocket-server",
 	"dependencies" : {
-		"log4js": "*",
-		"mime": "*",
+		"log4js": "~2.5.2",
+		"mime-types": "*",
 		"websocket.io": "git://github.com/LearnBoost/websocket.io#5f0b3799f50944bc4d1eb58acdef61c38883d6cf",
 		"spotify-web-api-node": "*"
 	}
