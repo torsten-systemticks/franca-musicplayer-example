@@ -1,7 +1,7 @@
 'use strict';
 var log4js = require('log4js');
 log4js.configure('log4js-conf.json');
-var logger = log4js.getLogger('MusicplayerStub');
+var logger = log4js.getLogger('ipc.MusicplayerStub');
 
 function MusicplayerStub(port) {
 	this.wsio = require('websocket.io');
@@ -18,8 +18,8 @@ MusicplayerStub.prototype.getClients = function() {
 };
 
 MusicplayerStub.prototype.setCurrentTrack = function(newValue) {
-	logger.info(JSON.stringify({type: "attribute", name:'currentTrack', params:newValue}));
 	this.currentTrack = newValue;
+	logger.info(JSON.stringify({ edge : {type: "broadcast", source: "MusicplayerStub", destination: "client" }, method: {name: 'currentTrack', params:newValue } } ));						
 	this.server.emit('publishAll', "signal:currentTrack", newValue);
 };
 
@@ -61,22 +61,22 @@ MusicplayerStub.prototype.init = function() {
 	// RPC stub for method findTrackByTitle
 	_this.server.rpc('invoke', function() {
 		this.register('findTrackByTitle', function(client, cb, args) {
-			logger.info(JSON.stringify({type: "request", name:'findTrackByTitle', params:args}));						
+			logger.info(JSON.stringify({ edge : {type: "request", source: "client", destination: "MusicplayerStub" }, method: {name: 'findTrackByTitle', params:args}}));						
 			if (typeof(_this.findTrackByTitleSync) === "function") {
 				var result = _this.findTrackByTitleSync(args["title"]);
 				logger.info('request: findTrackByTitle');
 				// TODO: How to handle error responses in the synchronous case?
 				cb(null, JSON.stringify(result));
-				logger.info(JSON.stringify({type: "response", name:'findTrackByTitle', params:result}));						
+				logger.info(JSON.stringify({ edge : {type: "response", source: "MusicplayerStub", destination: "client" }, method: {name: 'findTrackByTitle', params:result}}));						
 			} else if (typeof(_this.findTrackByTitle) === "function") {
 				_this.findTrackByTitle(args["title"],
 					function(result) {
 						cb(null, JSON.stringify(result));
-						logger.info(JSON.stringify({type: "response", name:'findTrackByTitle', params:result}));						
+						logger.info(JSON.stringify({ edge : {type: "response", source: "MusicplayerStub", destination: "client" }, method: {name: 'findTrackByTitle', params:result}}));						
 					},
 					function(error) {
 						cb(error, null);
-						logger.error(JSON.stringify({type: "error", name:'findTrackByTitle', params:error}));						
+						logger.info(JSON.stringify({ edge : {type: "error", source: "MusicplayerStub", destination: "client" }, method: {name: 'findTrackByTitle', params:result}}));						
 					}
 				);
 			}
@@ -85,7 +85,7 @@ MusicplayerStub.prototype.init = function() {
 	// RPC stub for method play
 	_this.server.rpc('invoke', function() {
 		this.register('play', function(client, cb, args) {
-			logger.info(JSON.stringify({type: "request", name:'play', params:args}));						
+			logger.info(JSON.stringify({ edge : {type: "request", source: "client", destination: "MusicplayerStub" }, method: {name: 'play', params:args } } ));						
 			if (typeof(_this.playSync) === "function") {
 				var result = _this.playSync();
 				logger.info('request: play');
@@ -96,7 +96,7 @@ MusicplayerStub.prototype.init = function() {
 				_this.play(
 					function(result) {
 						cb(null, JSON.stringify(result));
-						logger.info(JSON.stringify({type: "response", name:'play', params:result}));						
+						logger.info(JSON.stringify({ edge : {type: "response", source: "MusicplayerStub", destination: "client" }, method: {name: 'play', params:result}}));						
 					}
 				);
 			}
@@ -105,7 +105,7 @@ MusicplayerStub.prototype.init = function() {
 	// RPC stub for method pause
 	_this.server.rpc('invoke', function() {
 		this.register('pause', function(client, cb, args) {
-			logger.info(JSON.stringify({type: "request", name:'pause', params:args}));						
+			logger.info(JSON.stringify({ edge : {type: "request", source: "client", destination: "MusicplayerStub" }, method: {name: 'pause', params:args }} ));						
 			if (typeof(_this.pauseSync) === "function") {
 				var result = _this.pauseSync();
 				logger.info('request: pause');
@@ -116,7 +116,7 @@ MusicplayerStub.prototype.init = function() {
 				_this.pause(
 					function(result) {
 						cb(null, JSON.stringify(result));
-						logger.info(JSON.stringify({type: "response", name:'pause', params:result}));						
+						logger.info(JSON.stringify({ edge : {type: "response", source: "MusicplayerStub", destination: "client" }, method: {name: 'pause', params:result}}));						
 					}
 				);
 			}
