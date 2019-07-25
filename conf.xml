@@ -77,7 +77,7 @@
 		<log4j-plugin>
 			<Path attr="./plugins/liblog4j-plugin.so"/>
 		
-			<log4jLogFile attr="/home/ubuntu/franca-musicplayer-example/org.franca.examples.musicplayer/server_nodejs/logs/application.log"/>
+			<log4jLogFile attr="/franca-musicplayer-example/org.franca.examples.musicplayer/server_nodejs/logs/application.log"/>
 		
 			<!-- Add your config Item here: <ConfigItem1 attr="value1"/> -->
 		
